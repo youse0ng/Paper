@@ -1,0 +1,56 @@
+Object Detection의 딥러닝 모델(1_stage_model과 2_stage_model)을 제공하고
+딥러닝과 관련된 학습,테스트 과정을 다양한 모듈로 제공하는 
+Open Library인 MMDetection을 이용해서, 쓰레기를 인식하려고 합니다.
+
+다음과 같은 MMDetection을 사용하기 위해서는 해당 라이브러리의 이해가 필요합니다. 
+
+MMDetection의 User Guide의 첫번째인 Learn About CONFIGS를 봅시다.
+https://mmdetection.readthedocs.io/en/latest/user_guides/config.html
+
+MMDetection과 다른 OpenMMlab의 repo는 Config system을 사용합니다.
+우리가 MMdetection을 사용하기 위해서는 Config system에 대해 이해가 필요합니다.
+
+1. Model Config:
+Detection하기위한 알고리즘 구성요소를 셋업하기위해서 model을 사용합니다. 뿐만아니라 신경망 구성요소인 
+backbone, neck과 data_preprocesor(데이터 전처리), train_cfg, test_cfg 등을 필요로 한다.
+data_preprocessor은 데이터로더에 의해 data output의 배치를 처리하는 것을 담당하고
+model_config 내에 있는 train_cfg,test_cfg는 training과 testing 구성요소의 하이퍼파라미터입니다.
+
+2. Dataset and evaluator config:
+Dataloaders는 training,validation,testing을 실행자로 요구된다.
+Dataset과 data Pipeline은 dataloader를 만드는데있어 설정될 필요가 있다.
+
+Evaluators는 validation과 testing dataset에 학습된 모델의 평가지표를 계산하는데 사용된다.
+evaluator의 config는 metric config 하나 이거나 metric_config의 리스트로 구성되어있다.
+
+테스트데이터셋은 어노테이션 파일이 없기때문에,  the test_dataloader and test_evaluator config는 일반적으로 val의 dataloader와 evaluator
+와 동일하다.
+
+해당 resource에 테스트 데이터셋의 결과를 저장하는 방법이 코드로 구현되어있으니 다시한번 봐야할 필요성이 있다.
+
+3. Training and testing config:
+MMEngine's runner는 트레이닝,검증, 실험 과정을 통제하는 루프를 사용한다.
+사용자는 최대 학습 epoch와 검증 interval을 설정할 수 있다.
+
+4. Optimization config:
+`optim_wrapper`는 최적화와 관련된 설정을 구성하는 분야이다.
+`optim_wrapper`는 최적화 함수를 제공할 뿐만 아니라 gradient clipping, mixed precision training과 같은 기능을 제공한다.
+`param_scheduler`는 learning rate와 momentum과 같은 최적화 하이퍼파라미터를 조절하는 방법을 정의하는 분야이다.
+사용자는 
+
+5. Hook config:
+hook 이란 것은 제가 처음들어봐서 다른 곳에서 resource를 보고 간단히 참조하고 넘어갔습니다.
+Deeplearning loss function을 보고 각 가중치에 대한 기울기를 gradient descent를 이용하여 가중치를 업데이트하는데,
+Chain_Rule을 통해 backpropagation 방식으로 출력값에 대한 해당 가중치의 편미분 값을 구할 수 있다.
+hook을 사용하면 이러한 layer마다의 편미분값을 볼 수 있게 구현한 것이다.
+
+6. Runtime Config:
+7. Iter-based Config:
+MMEngine의 운영자는 iter기반의 training loop를 제공한다. epochs 기반이 아닌
+이를 사용하기 위해서는 사용자가 `train_cfg`,  `param_scheduler`, `train_dataloader`, `default_hook`, `log_processor`를 변경해야한다.
+
+8. Config file inheritance:
+`config/_base_`에 dataset, model, schedule, default_runtime.py 이 들어있다.
+Faster RCNN, MaskRCNN, CascadeRCNN, RPN, SSD와 같은 모델중 하나
+
+
