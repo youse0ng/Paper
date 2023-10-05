@@ -51,6 +51,6 @@ MMEngine의 운영자는 iter기반의 training loop를 제공한다. epochs 기
 
 8. Config file inheritance:
 `config/_base_`에 dataset, model, schedule, default_runtime.py 이 들어있다.
-Faster RCNN, MaskRCNN, CascadeRCNN, RPN, SSD와 같은 모델중 하나
+많은 방법들은 Faster_RCNN, MaskRCNN, Cascade RCNN, RPN,SSD와 같은 모델들 중의 하나로 구성되기 쉽다.
 
 
